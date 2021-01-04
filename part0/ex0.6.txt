@@ -1,0 +1,26 @@
+note over browser:
+User adds a note
+presses "Submit" button
+end note
+
+
+note over browser:
+JS event handler adds the note to local list 
+and sends the new note to the Server 
+as a JSON playload
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over server
+Server parses JSON data
+end note
+
+server-->browser: Status Code: 201 Created
+
+note over browser
+browser uses JS code to create the new note
+and add it to the notes array.
+Note is rendered on the page, and the
+updated array sent back to server.
+end note
