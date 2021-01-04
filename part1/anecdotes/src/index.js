@@ -8,7 +8,6 @@ const App = (props) => {
 
   const handleRandomClick = () => {
     const randomIndex = Math.floor(Math.random() * anecdotes.length);
-    // console.log(randomIndex);
     setSelected(randomIndex);
   };
 
@@ -20,10 +19,14 @@ const App = (props) => {
 
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       <p>{props.anecdotes[selected]}</p>
       <p>has {points[selected]} votes</p>
       <button onClick={handleVoteClick}>vote</button>
       <button onClick={handleRandomClick}>next anecdote</button>
+      <h2>Anecdote with most votes</h2>
+      <p>{anecdotes[points.indexOf(Math.max(...points))]}</p>
+      <p>has {Math.max(...points)} votes</p>
     </div>
   );
 };
