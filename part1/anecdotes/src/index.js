@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 const App = (props) => {
   const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
 
   const handleRandomClick = () => {
     const randomIndex = Math.floor(Math.random() * anecdotes.length);
@@ -11,9 +12,17 @@ const App = (props) => {
     setSelected(randomIndex);
   };
 
+  const handleVoteClick = () => {
+    const newPoints = [...points];
+    newPoints[selected] += 1;
+    setPoints(newPoints);
+  };
+
   return (
     <div>
       <p>{props.anecdotes[selected]}</p>
+      <p>has {points[selected]} votes</p>
+      <button onClick={handleVoteClick}>vote</button>
       <button onClick={handleRandomClick}>next anecdote</button>
     </div>
   );
