@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 const Statistics = ({ good, neutral, bad, all, average, positive }) => {
+  if (good === 0 && (bad === 0) & (neutral === 0)) {
+    return <p>No feedback given</p>;
+  }
   return (
     <div>
       <p>good {good}</p>
