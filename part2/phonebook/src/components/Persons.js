@@ -1,15 +1,14 @@
+import Person from './Person';
 import React from 'react';
 
-const Persons = ({ persons }) => {
-   return (
-      <div>
-         {persons.map((person) => (
-            <p key={person.name}>
-               {person.name} {person.number}
-            </p>
-         ))}
-      </div>
-   );
+const Persons = ({ persons, removeOnClick }) => {
+  return (
+    <div>
+      {persons.map((person) => (
+        <Person key={person.id} person={person} removeOnClick={removeOnClick} />
+      ))}
+    </div>
+  );
 };
 
 export default Persons;
