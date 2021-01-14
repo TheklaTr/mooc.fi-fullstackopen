@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
-import axios from 'axios';
 import personService from './services/personService';
 
 const App = () => {
@@ -27,9 +26,28 @@ const App = () => {
     };
 
     const existingNames = persons.map((person) => person.name);
+    const existingId = existingNames.indexOf(newName);
 
-    if (existingNames.indexOf(newName) !== -1) {
-      alert(`${newName} is already added to phonebook`);
+    if (existingId !== -1) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const newInfo = { ...persons[existingId], number: newNumber };
+        personService
+          .replace(newInfo)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== newInfo.id ? person : returnedPerson
+              )
+            );
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch((error) => console.error());
+      }
     } else {
       personService
         .create(personObject)

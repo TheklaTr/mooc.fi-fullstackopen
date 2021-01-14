@@ -16,4 +16,10 @@ const remove = (id, deletedObject) => {
     .then((res) => res.data);
 };
 
-export default { getAll, create, remove };
+const replace = (updatedObject) => {
+  return axios
+    .put(`${baseUrl}/${updatedObject.id}`, updatedObject)
+    .then((res) => res.data);
+};
+
+export default { getAll, create, remove, replace };
