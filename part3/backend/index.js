@@ -2,7 +2,18 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 
-app.use(morgan('tiny'));
+// app.use(morgan('tiny'));
+
+// create new token
+morgan.token('body', (request, response) => {
+  if (request.method !== 'POST') return;
+  return JSON.stringify(request.body);
+});
+
+// predefined token
+app.use(
+  morgan(`:method :url :status :res[content-length] - :response-time ms :body`)
+);
 
 // activate json-parser for POST
 app.use(express.json());
