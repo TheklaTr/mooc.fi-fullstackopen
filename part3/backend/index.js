@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+// activate json-parser for POST
 app.use(express.json());
 
 let persons = [
@@ -30,10 +31,12 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello To PhoneBook</h1>');
 });
 
+// GET all
 app.get('/api/persons', (request, response) => {
   response.json(persons);
 });
 
+// GET id
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
   console.log(req.params);
@@ -49,12 +52,43 @@ app.get('/api/persons/:id', (req, res) => {
   res.json(person);
 });
 
+// DELETE id
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
   persons = persons.filter((person) => person.id !== id);
 
   res.status(204).end();
 });
+
+// POST
+app.post('/api/persons', (req, res) => {
+  const body = req.body;
+
+  // check name/number is missing
+  if (!body.name || !body.number) {
+    return res.status(400).json({ error: 'name or number is missing' });
+  }
+
+  // check existing name
+  if (
+    persons.find(
+      (person) => person.name.toLowerCase() === body.name.toLowerCase()
+    )
+  ) {
+    return res.status(403).json({ error: 'name must be unique' });
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: Math.floor(Math.random() * 1000 + 1), // generate Id
+  };
+
+  persons = persons.concat(person);
+  res.json(person);
+});
+
+// GET info
 
 app.get('/info', (req, res) => {
   const reqDate = new Date();
