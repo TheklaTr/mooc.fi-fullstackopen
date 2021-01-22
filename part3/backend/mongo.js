@@ -8,7 +8,7 @@ if (process.argv.length !== 3 && process.argv.length !== 5) {
 }
 
 const password = process.argv[2];
-const url = `mongodb+srv://fullstack:${password}@cluster0.4udjs.mongodb.net/test?retryWrites=true&w=majority`;
+const url = `mongodb+srv://fullstack:${password}@cluster0.4udjs.mongodb.net/phonebook?retryWrites=true&w=majority`;
 
 mongoose.connect(url, {
   useNewUrlParser: true,

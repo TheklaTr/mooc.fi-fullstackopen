@@ -1,6 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const Person = require('./models/note');
 
 const cors = require('cors');
 
@@ -24,28 +26,28 @@ app.use(
 // activate json-parser for POST
 app.use(express.json());
 
-let persons = [
-  {
-    name: 'Arto Hellas',
-    number: '040-123456',
-    id: 1,
-  },
-  {
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-    id: 2,
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: 3,
-  },
-  {
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-    id: 4,
-  },
-];
+// let persons = [
+//   {
+//     name: 'Arto Hellas',
+//     number: '040-123456',
+//     id: 1,
+//   },
+//   {
+//     name: 'Ada Lovelace',
+//     number: '39-44-5323523',
+//     id: 2,
+//   },
+//   {
+//     name: 'Dan Abramov',
+//     number: '12-43-234345',
+//     id: 3,
+//   },
+//   {
+//     name: 'Mary Poppendieck',
+//     number: '39-23-6423122',
+//     id: 4,
+//   },
+// ];
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello To PhoneBook</h1>');
@@ -53,23 +55,28 @@ app.get('/', (req, res) => {
 
 // GET all
 app.get('/api/persons', (request, response) => {
-  response.json(persons);
+  // response.json(persons);
+  Person.find({}).then((persons) => {
+    response.json(persons.map((person) => person.toJSON()));
+  });
 });
 
 // GET id
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  console.log(req.params);
+  // const id = Number(req.params.id);
 
-  const person = persons.find((person) => person.id === id);
+  // const person = persons.find((person) => person.id === id);
 
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).send();
-  }
+  // if (person) {
+  //   res.json(person);
+  // } else {
+  //   res.status(404).send();
+  // }
 
-  res.json(person);
+  // res.json(person);
+
+  const id = req.params.id;
+  Person.findById(id).then((person) => person.toJSON());
 });
 
 // DELETE id
@@ -85,31 +92,39 @@ app.post('/api/persons', (req, res) => {
   const body = req.body;
 
   // check name/number is missing
-  if (!body.name || !body.number) {
-    return res.status(400).json({ error: 'name or number is missing' });
-  }
+  // if (!body.name || !body.number) {
+  //   return res.status(400).json({ error: 'name or number is missing' });
+  // }
 
-  // check existing name
-  if (
-    persons.find(
-      (person) => person.name.toLowerCase() === body.name.toLowerCase()
-    )
-  ) {
-    return res.status(403).json({ error: 'name must be unique' });
-  }
+  // // check existing name
+  // if (
+  //   persons.find(
+  //     (person) => person.name.toLowerCase() === body.name.toLowerCase()
+  //   )
+  // ) {
+  //   return res.status(403).json({ error: 'name must be unique' });
+  // }
 
-  const person = {
+  // const person = {
+  //   name: body.name,
+  //   number: body.number,
+  //   id: Math.floor(Math.random() * 1000 + 1), // generate Id
+  // };
+
+  // persons = persons.concat(person);
+  // res.json(person);
+
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
-    id: Math.floor(Math.random() * 1000 + 1), // generate Id
-  };
+  });
 
-  persons = persons.concat(person);
-  res.json(person);
+  newPerson.save().then((savedPerson) => {
+    res.json(savedPerson.toJSON());
+  });
 });
 
 // GET info
-
 app.get('/info', (req, res) => {
   const reqDate = new Date();
   res.send(`<p>Phonebook has info for ${persons.length} people</p>
