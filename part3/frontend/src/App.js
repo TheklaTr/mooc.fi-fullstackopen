@@ -106,7 +106,7 @@ const App = () => {
         })
         .catch((error) => {
           setErrorMessage(
-            `Information of ${newName} has already been removed from server`
+            `Information of ${deletedPerson.name} has already been removed from server`
           );
           setTimeout(() => setErrorMessage(null), 5000);
           setPersons(persons.filter((person) => person.id !== id));
