@@ -15,14 +15,14 @@ app.use(bodyParser.json())
 // app.use(morgan('tiny'));
 
 // create new token
-morgan.token('body', (request, response) => {
+morgan.token('body', (request) => {
   if (request.method !== 'POST') return
   return JSON.stringify(request.body)
 })
 
 // predefined token
 app.use(
-  morgan(`:method :url :status :res[content-length] - :response-time ms :body`)
+  morgan(':method :url :status :res[content-length] - :response-time ms :body')
 )
 
 // let persons = [
@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
 })
 
 // GET all
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
   Person.find({})
     .then((persons) => {
       response.json(persons.map((person) => person.toJSON()))
@@ -62,7 +62,7 @@ app.get('/api/persons', (request, response) => {
 })
 
 // GET info
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
   const reqDate = new Date()
   Person.find({})
     .then((persons) => {

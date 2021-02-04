@@ -73,6 +73,7 @@ const App = () => {
         .catch((error) => {
           // this is the way to access the error message
           setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => setErrorMessage(null), 5000)
         })
     } else {
       setErrorMessage('Please provide a number')
