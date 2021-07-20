@@ -4,9 +4,9 @@
    "description": "",
    "main": "index.js",
    "scripts": {
-      "test": "jest --verbose",
       "start": "node index.js",
-      "dev": "nodemon index.js"
+      "dev": "nodemon index.js",
+      "test": "jest --verbose"
    },
    "author": "Hien Tran",
    "license": "MIT",
