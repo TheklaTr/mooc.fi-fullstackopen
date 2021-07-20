@@ -21,9 +21,9 @@ const mostBlogs = (blogs) => {
    if (!blogs || blogs.length === 0) return null
 
    const result = _.chain(blogs)
-      .groupBy('author')
+      .groupBy('author') // returns the author
       .map((result) => {
-         return { author: result[0].author, blogs: result.length }
+         return { author: result[0].author, blogs: result.length } // largest amount of blogs
       })
       .maxBy('blogs')
       .value()
@@ -31,4 +31,19 @@ const mostBlogs = (blogs) => {
    return result
 }
 
-module.exports = { dummy, totalLikes, favoriteBlogs, mostBlogs }
+const mostLikes = (blogs) => {
+   if (!blogs || blogs.length === 0) return null
+
+   const result = _.chain(blogs)
+      .groupBy('author') // returns the author
+      .map((blogsPerAuthor) => {
+         const likesPerAuthor = _.sumBy(blogsPerAuthor, (au) => au.likes) // total number of likes
+         return { author: blogsPerAuthor[0].author, likes: likesPerAuthor }
+      })
+      .maxBy('likes') // largest amount of likes
+      .value()
+
+   return result
+}
+
+module.exports = { dummy, totalLikes, favoriteBlogs, mostBlogs, mostLikes }
