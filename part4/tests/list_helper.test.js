@@ -85,3 +85,29 @@ describe('total likes', () => {
       expect(result).toBe(36)
    })
 })
+
+describe('favorite blogs', () => {
+   test('of empty list is null', () => {
+      const result = listHelper.favoriteBlogs([])
+      expect(result).toEqual(null)
+   })
+
+   test('list has only one blog', () => {
+      const result = listHelper.favoriteBlogs(listWithOneBlog)
+
+      expect(result).toEqual({
+         title: listWithOneBlog[0].title,
+         author: listWithOneBlog[0].author,
+         likes: listWithOneBlog[0].likes,
+      })
+   })
+
+   test('the most favorite blog', () => {
+      const result = listHelper.favoriteBlogs(blogs)
+      expect(result).toEqual({
+         title: 'Canonical string reduction',
+         author: 'Edsger W. Dijkstra',
+         likes: 12,
+      })
+   })
+})
