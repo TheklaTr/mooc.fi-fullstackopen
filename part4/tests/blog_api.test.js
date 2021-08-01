@@ -37,7 +37,7 @@ test('successfully creates a new blog post ', async () => {
       title: 'test add blog',
       author: 'Author Test 1',
       url: 'https://testblog1.com',
-      likes: 0,
+      likes: 3,
    }
 
    const response = await api
@@ -54,6 +54,18 @@ test('successfully creates a new blog post ', async () => {
    // verify that the content of the blog post is saved correctly to the database
    const titles = blogsAtEnd.map((blog) => blog.title)
    expect(titles).toContain('test add blog')
+})
+
+test("the 'likes' property will default to 0 when missing form the request", async () => {
+   const newBlog = {
+      title: 'test add blog without likes',
+      author: 'Author Test 2',
+      url: 'https://testblog2.com',
+   }
+
+   const savedBlog = await api.post('/api/blogs').send(newBlog)
+
+   expect(savedBlog.body.likes).toBe(0)
 })
 
 afterAll(() => {
