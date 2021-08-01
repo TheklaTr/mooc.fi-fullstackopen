@@ -8,25 +8,30 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 
 beforeEach(async () => {
-  await Blog.deleteMany({})
+   await Blog.deleteMany({})
 
-  for (const blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog)
-    await blogObject.save()
-  }
+   for (const blog of helper.initialBlogs) {
+      let blogObject = new Blog(blog)
+      await blogObject.save()
+   }
 })
 
 test('the amount of blogs returned is correct', async () => {
-  const blogsAtStart = await helper.blogsInDb()
+   const blogsAtStart = await helper.blogsInDb()
 
-  const response = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+   const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  expect(response.body).toHaveLength(blogsAtStart.length)
+   expect(response.body).toHaveLength(blogsAtStart.length)
+})
+
+test('the unique identifier property of the blog posts', async () => {
+   const response = await api.get('/api/blogs')
+   expect(response.body[0].id).toBeDefined()
 })
 
 afterAll(() => {
-  mongoose.connection.close()
+   mongoose.connection.close()
 })
