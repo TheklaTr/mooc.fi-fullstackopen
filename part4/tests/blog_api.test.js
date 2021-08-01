@@ -40,7 +40,7 @@ test('successfully creates a new blog post ', async () => {
       likes: 3,
    }
 
-   const response = await api
+   await api
       .post('/api/blogs')
       .send(newBlog)
       .expect(201)
@@ -66,6 +66,18 @@ test("the 'likes' property will default to 0 when missing form the request", asy
    const savedBlog = await api.post('/api/blogs').send(newBlog)
 
    expect(savedBlog.body.likes).toBe(0)
+})
+
+test('a blog without title and url', async () => {
+   const newBlog = {
+      author: 'Author Test 3',
+   }
+
+   await api.post('/api/blogs').send(newBlog).expect(400)
+
+   const blogsAtEnd = await helper.blogsInDb()
+
+   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 afterAll(() => {
