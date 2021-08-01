@@ -94,6 +94,27 @@ test('succeeds with status code 204 if id is valid', async () => {
    expect(titles).not.toContain(blogToDelete.title)
 })
 
+test('succeed updating a blog with valid id and info', async () => {
+   const blogsAtStart = await helper.blogsInDb()
+   const blogToUpdate = blogsAtStart[0]
+
+   const updatedBlog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: 12,
+   }
+
+   await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+   const blogsAtEnd = await helper.blogsInDb()
+   expect(blogsAtEnd[0].likes).toEqual(12)
+})
+
 afterAll(() => {
    mongoose.connection.close()
 })
