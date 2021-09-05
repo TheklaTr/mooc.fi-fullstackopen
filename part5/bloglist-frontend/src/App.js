@@ -1,6 +1,9 @@
+import './App.css'
+
 import React, { useEffect, useState } from 'react'
 
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -8,6 +11,8 @@ const App = () => {
    const [blogs, setBlogs] = useState([])
    const [username, setUsername] = useState('')
    const [password, setPassword] = useState('')
+
+   const [notification, setNotification] = useState(null)
 
    const [user, setUser] = useState(null)
 
@@ -41,7 +46,12 @@ const App = () => {
          setUsername('')
          setPassword('')
       } catch (exception) {
-         console.log('Wrong credential')
+         setNotification({
+            message: 'wrong username or password',
+            style: 'error',
+         })
+
+         setTimeout(() => setNotification(null), 5000)
       }
    }
 
@@ -49,6 +59,12 @@ const App = () => {
       setUser(null)
       setUsername('')
       setPassword('')
+      setNotification({
+         message: 'successfully logout',
+         style: 'success',
+      })
+      setTimeout(() => setNotification(null), 5000)
+
       window.localStorage.clear()
    }
 
@@ -61,10 +77,16 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      setNotification({
+         message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+         style: 'success',
+      })
+
+      setTimeout(() => setNotification(null), 5000)
    }
 
    const loginForm = () => (
-      <form onClick={handleLogin}>
+      <form onSubmit={handleLogin}>
          <div>
             username
             <input
@@ -124,6 +146,7 @@ const App = () => {
       return (
          <div>
             <h2>log in to application</h2>
+            <Notification notification={notification} />
             {loginForm()}
          </div>
       )
@@ -132,6 +155,7 @@ const App = () => {
    return (
       <div>
          <h2>blogs</h2>
+         <Notification notification={notification} />
          <p>
             {user.name} logged in<button onClick={handleLogout}>logout</button>
          </p>
