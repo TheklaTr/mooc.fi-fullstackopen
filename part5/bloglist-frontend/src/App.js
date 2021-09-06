@@ -78,6 +78,15 @@ const App = () => {
       setTimeout(() => setNotification(null), 5000)
    }
 
+   const handleLike = async (blog) => {
+      try {
+         const likedBlog = await blogService.likeBlog(blog)
+         setBlogs(blogs.map((b) => (b.id === likedBlog.id ? likedBlog : b)))
+      } catch (error) {
+         console.log(error)
+      }
+   }
+
    const loginForm = () => (
       <form onSubmit={handleLogin}>
          <div>
@@ -125,10 +134,10 @@ const App = () => {
          <p>
             {user.name} logged in<button onClick={handleLogout}>logout</button>
          </p>
-         <h2>create new</h2>
+
          {blogForm()}
          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} likeBlog={handleLike} />
          ))}
       </div>
    )

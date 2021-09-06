@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlog }) => {
    const blogStyle = {
       padding: 10,
       paddingLeft: 2,
@@ -8,11 +8,16 @@ const Blog = ({ blog }) => {
       borderWidth: 1,
       marginBottom: 5,
    }
+   console.log(blog)
 
    const [visible, setVisible] = useState(false)
 
    const toggleVisibility = () => {
       setVisible(!visible)
+   }
+
+   const handleLike = async () => {
+      await likeBlog(blog)
    }
 
    return (
@@ -28,7 +33,7 @@ const Blog = ({ blog }) => {
             <div>
                <div>{blog.url}</div>
                <div>
-                  likes {blog.likes} <button>like</button>
+                  likes {blog.likes} <button onClick={handleLike}>like</button>
                </div>
                {!blog.user ? <div /> : <div>{blog.user.name}</div>}
             </div>
