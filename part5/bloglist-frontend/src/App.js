@@ -3,7 +3,9 @@ import './App.css'
 import React, { useEffect, useState } from 'react'
 
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -15,10 +17,6 @@ const App = () => {
    const [notification, setNotification] = useState(null)
 
    const [user, setUser] = useState(null)
-
-   const [title, setTitle] = useState('')
-   const [author, setAuthor] = useState('')
-   const [url, setUrl] = useState('')
 
    useEffect(() => {
       blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -68,15 +66,10 @@ const App = () => {
       window.localStorage.clear()
    }
 
-   const addBlog = async (event) => {
-      event.preventDefault()
-      const blogObject = { title, author, url }
-
+   const addBlog = async (blogObject) => {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+
       setNotification({
          message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
          style: 'success',
@@ -110,36 +103,9 @@ const App = () => {
    )
 
    const blogForm = () => (
-      <form onSubmit={addBlog}>
-         <div>
-            title:
-            <input
-               type="text"
-               name="Title"
-               value={title}
-               onChange={({ target }) => setTitle(target.value)}
-            />
-         </div>
-         <div>
-            author:
-            <input
-               type="text"
-               name="Author"
-               value={author}
-               onChange={({ target }) => setAuthor(target.value)}
-            />
-         </div>
-         <div>
-            url:
-            <input
-               type="text"
-               name="Url"
-               value={url}
-               onChange={({ target }) => setUrl(target.value)}
-            />
-         </div>
-         <button type="submit">create</button>
-      </form>
+      <Togglable buttonLabel="create new blog">
+         <BlogForm createBlog={addBlog} />
+      </Togglable>
    )
 
    if (user === null) {
