@@ -8,7 +8,6 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
       borderWidth: 1,
       marginBottom: 5,
    }
-   console.log(blog)
 
    const [visible, setVisible] = useState(false)
 
