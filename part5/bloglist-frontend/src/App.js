@@ -96,7 +96,7 @@ const App = () => {
          setBlogs(blogs.filter((b) => b.id !== removedBlog.id))
       } catch (error) {
          setNotification({
-            message: "You don't have permission to remove this blog!",
+            message: 'You do not have permission to remove this blog!',
             style: 'error',
          })
          setTimeout(() => setNotification(null), 5000)
