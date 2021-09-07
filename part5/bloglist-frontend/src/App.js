@@ -90,6 +90,19 @@ const App = () => {
 
    const DescendingSortBlog = blogs.sort((a, b) => b.likes - a.likes)
 
+   const handleRemove = async (removedBlog) => {
+      try {
+         await blogService.remove(removedBlog)
+         setBlogs(blogs.filter((b) => b.id !== removedBlog.id))
+      } catch (error) {
+         setNotification({
+            message: "You don't have permission to remove this blog!",
+            style: 'error',
+         })
+         setTimeout(() => setNotification(null), 5000)
+      }
+   }
+
    const loginForm = () => (
       <LoginForm
          handleSubmit={handleLogin}
@@ -126,7 +139,12 @@ const App = () => {
 
          {blogForm()}
          {DescendingSortBlog.map((blog) => (
-            <Blog key={blog.id} blog={blog} likeBlog={handleLike} />
+            <Blog
+               key={blog.id}
+               blog={blog}
+               likeBlog={handleLike}
+               removeBlog={handleRemove}
+            />
          ))}
       </div>
    )
