@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
@@ -87,28 +88,16 @@ const App = () => {
       }
    }
 
+   const DescendingSortBlog = blogs.sort((a, b) => b.likes - a.likes)
+
    const loginForm = () => (
-      <form onSubmit={handleLogin}>
-         <div>
-            username
-            <input
-               type="text"
-               name="Username"
-               value={username}
-               onChange={({ target }) => setUsername(target.value)}
-            />
-         </div>
-         <div>
-            password
-            <input
-               type="password"
-               name="Password"
-               value={password}
-               onChange={({ target }) => setPassword(target.value)}
-            />
-         </div>
-         <button type="submit">login</button>
-      </form>
+      <LoginForm
+         handleSubmit={handleLogin}
+         username={username}
+         handleUsernameChange={({ target }) => setUsername(target.value)}
+         password={password}
+         handlePasswordChange={({ target }) => setPassword(target.value)}
+      />
    )
 
    const blogForm = () => (
@@ -136,7 +125,7 @@ const App = () => {
          </p>
 
          {blogForm()}
-         {blogs.map((blog) => (
+         {DescendingSortBlog.map((blog) => (
             <Blog key={blog.id} blog={blog} likeBlog={handleLike} />
          ))}
       </div>
