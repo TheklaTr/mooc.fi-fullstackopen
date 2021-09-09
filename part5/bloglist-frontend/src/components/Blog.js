@@ -26,7 +26,7 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
    }
 
    return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="blogRender">
          <div>
             {blog.title} {blog.author}{' '}
             <button onClick={toggleVisibility}>
