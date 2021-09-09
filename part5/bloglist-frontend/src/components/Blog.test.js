@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom/extend-expect'
 
+import { fireEvent, render } from '@testing-library/react'
+
 import Blog from './Blog'
 import React from 'react'
-import { render } from '@testing-library/react'
 
 describe('<Blog />', () => {
    let component
@@ -32,5 +33,15 @@ describe('<Blog />', () => {
       expect(div).toHaveTextContent(blog.author)
       expect(div).not.toHaveTextContent(blog.url)
       expect(div).not.toHaveTextContent(blog.likes)
+   })
+
+   test(' url and number of likes are shown when the show button clicked', () => {
+      const showButton = component.getByText('view')
+      fireEvent.click(showButton)
+
+      const div = component.container.querySelector('.blogRender')
+
+      expect(div).toHaveTextContent(blog.url)
+      expect(div).toHaveTextContent(blog.likes)
    })
 })
