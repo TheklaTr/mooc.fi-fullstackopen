@@ -35,7 +35,7 @@ describe('<Blog />', () => {
       expect(div).not.toHaveTextContent(blog.likes)
    })
 
-   test(' url and number of likes are shown when the show button clicked', () => {
+   test('url and number of likes are shown when the show button clicked', () => {
       const showButton = component.getByText('view')
       fireEvent.click(showButton)
 
@@ -43,5 +43,16 @@ describe('<Blog />', () => {
 
       expect(div).toHaveTextContent(blog.url)
       expect(div).toHaveTextContent(blog.likes)
+   })
+
+   test('like button is clicked twice', () => {
+      const showButton = component.getByText('view')
+      fireEvent.click(showButton)
+
+      const likeButton = component.getByText('like')
+      fireEvent.click(likeButton)
+      fireEvent.click(likeButton)
+
+      expect(mockHandler.mock.calls).toHaveLength(2)
    })
 })
