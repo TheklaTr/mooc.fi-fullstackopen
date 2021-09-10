@@ -6,7 +6,14 @@ describe('Blog app', function () {
          username: 'test-a',
          password: 'test',
       }
+
+      const user1 = {
+         name: 'test-b',
+         username: 'test-b',
+         password: 'test',
+      }
       cy.request('POST', 'http://localhost:3003/api/users', user)
+      cy.request('POST', 'http://localhost:3003/api/users', user1)
       cy.visit('http://localhost:3000')
    })
 
@@ -72,6 +79,42 @@ describe('Blog app', function () {
 
                cy.get('.likeButton').click()
                cy.contains('likes 1')
+            })
+
+            it('User can delete their own blog', function () {
+               cy.contains('title-testing author-testing')
+                  .parent()
+                  .find('button')
+                  .click()
+
+               cy.contains('remove').click()
+               cy.get('html').should(
+                  'not.contain',
+                  'title-testing author-testing'
+               )
+            })
+
+            it("User cannot delete other's blog", function () {
+               cy.contains('logout').click()
+
+               cy.login({ username: 'test-b', password: 'test' })
+
+               cy.contains('title-testing author-testing')
+                  .parent()
+                  .find('button')
+                  .click()
+
+               cy.contains('remove').click()
+
+               cy.get('html').should('contain', 'title-testing author-testing')
+
+               cy.get('.error')
+                  .should(
+                     'contain',
+                     'You do not have permission to remove this blog!'
+                  )
+                  .and('have.css', 'color', 'rgb(255, 0, 0)')
+                  .and('have.css', 'border-style', 'solid')
             })
          })
       })
