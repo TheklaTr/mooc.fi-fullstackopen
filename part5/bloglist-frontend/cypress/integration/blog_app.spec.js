@@ -94,7 +94,7 @@ describe('Blog app', function () {
                )
             })
 
-            it("User cannot delete other's blog", function () {
+            it('User cannot delete other\'s blog', function () {
                cy.contains('logout').click()
 
                cy.login({ username: 'test-b', password: 'test' })
@@ -115,6 +115,52 @@ describe('Blog app', function () {
                   )
                   .and('have.css', 'color', 'rgb(255, 0, 0)')
                   .and('have.css', 'border-style', 'solid')
+            })
+
+            it('Blogs are ordered descending according to likes', function () {
+               cy.createBlog({
+                  title: 'title-a',
+                  author: 'author-a',
+                  url: 'url-a.com',
+               })
+
+               cy.createBlog({
+                  title: 'title-b',
+                  author: 'author-b',
+                  url: 'url-b.com',
+               })
+
+               cy.contains('title-a author-a').find('button').click()
+               cy.contains('title-b author-b').find('button').click()
+               cy.contains('title-testing author-testing')
+                  .find('button')
+                  .click()
+
+               cy.get('.likeButton').then((button) => {
+                  cy.wrap(button[1]).click()
+                  cy.wrap(button[1]).click()
+                  cy.wrap(button[2]).click()
+                  cy.wrap(button[0]).click()
+                  cy.wrap(button[1]).click()
+                  cy.wrap(button[2]).click()
+               })
+
+               let likesArray = []
+               let sortedLikes = []
+
+               cy.get('.likeValue').then((likes) => {
+                  likes.map((i, like) => {
+                     likesArray.push(like.innerHTML)
+                  })
+
+                  sortedLikes = likesArray.sort((a, b) => {
+                     return b - a
+                  })
+
+                  likes.map((i, like) => {
+                     cy.wrap(like[i]).contains(sortedLikes[i])
+                  })
+               })
             })
          })
       })
