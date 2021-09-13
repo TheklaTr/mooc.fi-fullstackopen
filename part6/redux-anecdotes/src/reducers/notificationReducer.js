@@ -2,6 +2,8 @@ const reducer = (state = '', action) => {
    switch (action.type) {
       case 'SHOW':
          return action.notification
+      case 'HIDE':
+         return null
       default:
          return state
    }
@@ -10,6 +12,13 @@ const reducer = (state = '', action) => {
 export const showNotification = (notification) => {
    return {
       type: 'SHOW',
+      notification,
+   }
+}
+
+export const hideNotification = (notification) => {
+   return {
+      type: 'HIDE',
       notification,
    }
 }
