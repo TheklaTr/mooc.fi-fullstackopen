@@ -10,6 +10,7 @@ const reducer = combineReducers({
    notification: notificationReducer,
    filter: filterReducer,
 })
+
 const store = createStore(reducer, composeWithDevTools())
 
 export default store
