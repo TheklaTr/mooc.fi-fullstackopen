@@ -9,14 +9,20 @@ const reducer = (state = '', action) => {
    }
 }
 
+let timeoutID = undefined
+
 export const showNotification = (notification, timeout) => {
-   return async (dispatch) => {
+   return (dispatch) => {
+      if (timeoutID) {
+         clearTimeout(timeoutID)
+      }
+
       dispatch({
          type: 'SHOW',
          notification,
       })
 
-      setTimeout(() => {
+      timeoutID = setTimeout(() => {
          dispatch(hideNotification())
       }, timeout * 1000)
    }
