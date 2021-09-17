@@ -5,10 +5,11 @@ import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 
 const NewBlog = ({ formRef }) => {
-   const dispatch = useDispatch()
    const [title, setTitle] = useState('')
    const [author, setAuthor] = useState('')
    const [url, setUrl] = useState('')
+
+   const dispatch = useDispatch()
 
    const handleNewBlog = (event) => {
       event.preventDefault()
@@ -24,18 +25,29 @@ const NewBlog = ({ formRef }) => {
 
          formRef.current.toggleVisibility()
 
-         setNotification(
-            dispatch({
-               message: `a new blog '${title}' by ${author} added!`,
-               style: 'success',
-            })
+         dispatch(
+            setNotification(
+               {
+                  message: `a new blog '${title}' by ${author} added!`,
+                  style: 'success',
+               },
+               5
+            )
          )
 
          setTitle('')
          setAuthor('')
          setUrl('')
       } catch (exception) {
-         console.log(exception)
+         dispatch(
+            setNotification(
+               {
+                  message: exception.message,
+                  style: 'error',
+               },
+               5
+            )
+         )
       }
    }
 

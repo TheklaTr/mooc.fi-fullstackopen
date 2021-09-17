@@ -5,14 +5,14 @@ import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
 import { initializeBlogs } from './reducers/blogReducer'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
 import storage from './utils/storage'
 
 const App = () => {
-   const [blogs, setBlogs] = useState(useSelector((state) => state.blogs))
+   const blogs = useSelector((state) => state.blogs)
+
    const [user, setUser] = useState(null)
    const [username, setUsername] = useState('')
    const [password, setPassword] = useState('')
@@ -49,32 +49,6 @@ const App = () => {
          storage.saveUser(user)
       } catch (exception) {
          notifyWith('wrong username/password', 'error')
-      }
-   }
-
-   const handleLike = async (id) => {
-      const blogToLike = blogs.find((b) => b.id === id)
-      const likedBlog = {
-         ...blogToLike,
-         likes: blogToLike.likes + 1,
-         user: blogToLike.user.id,
-      }
-      await blogService.update(likedBlog)
-      setBlogs(
-         blogs.map((b) =>
-            b.id === id ? { ...blogToLike, likes: blogToLike.likes + 1 } : b
-         )
-      )
-   }
-
-   const handleRemove = async (id) => {
-      const blogToRemove = blogs.find((b) => b.id === id)
-      const ok = window.confirm(
-         `Remove blog ${blogToRemove.title} by ${blogToRemove.author}`
-      )
-      if (ok) {
-         await blogService.remove(id)
-         setBlogs(blogs.filter((b) => b.id !== id))
       }
    }
 
@@ -125,15 +99,13 @@ const App = () => {
          </p>
 
          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <NewBlog blogFormRef={blogFormRef} />
+            <NewBlog formRef={blogFormRef} />
          </Togglable>
 
          {blogs.map((blog) => (
             <Blog
                key={blog.id}
                blog={blog}
-               handleLike={handleLike}
-               handleRemove={handleRemove}
                own={user.username === blog.user.username}
             />
          ))}
