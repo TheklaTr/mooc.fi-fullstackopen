@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
+import { initializeBlogs } from './reducers/blogReducer'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
 import storage from './utils/storage'
-import { useDispatch } from 'react-redux'
 
 const App = () => {
-   const [blogs, setBlogs] = useState([])
+   const [blogs, setBlogs] = useState(useSelector((state) => state.blogs))
    const [user, setUser] = useState(null)
    const [username, setUsername] = useState('')
    const [password, setPassword] = useState('')
@@ -21,8 +22,8 @@ const App = () => {
    const dispatch = useDispatch()
 
    useEffect(() => {
-      blogService.getAll().then((blogs) => setBlogs(blogs))
-   }, [])
+      dispatch(initializeBlogs())
+   }, [dispatch])
 
    useEffect(() => {
       const user = storage.loadUser()
@@ -48,17 +49,6 @@ const App = () => {
          storage.saveUser(user)
       } catch (exception) {
          notifyWith('wrong username/password', 'error')
-      }
-   }
-
-   const createBlog = async (blog) => {
-      try {
-         const newBlog = await blogService.create(blog)
-         blogFormRef.current.toggleVisibility()
-         setBlogs(blogs.concat(newBlog))
-         notifyWith(`a new blog '${newBlog.title}' by ${newBlog.author} added!`)
-      } catch (exception) {
-         console.log(exception)
       }
    }
 
@@ -124,8 +114,6 @@ const App = () => {
       )
    }
 
-   const byLikes = (b1, b2) => b2.likes - b1.likes
-
    return (
       <div>
          <h2>blogs</h2>
@@ -137,10 +125,10 @@ const App = () => {
          </p>
 
          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <NewBlog createBlog={createBlog} />
+            <NewBlog blogFormRef={blogFormRef} />
          </Togglable>
 
-         {blogs.sort(byLikes).map((blog) => (
+         {blogs.map((blog) => (
             <Blog
                key={blog.id}
                blog={blog}
