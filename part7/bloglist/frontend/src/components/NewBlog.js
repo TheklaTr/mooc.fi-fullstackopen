@@ -29,7 +29,7 @@ const NewBlog = ({ formRef }) => {
             setNotification(
                {
                   message: `a new blog '${title}' by ${author} added!`,
-                  style: 'success',
+                  type: 'success',
                },
                5
             )
