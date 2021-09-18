@@ -8,6 +8,7 @@ import LoginForm from './components/LoginForm'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import User from './components/User'
 import Users from './components/Users'
 import { initUsers } from './reducers/usersReducer'
 import { initializeBlogs } from './reducers/blogReducer'
@@ -15,6 +16,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 const App = () => {
    const blogs = useSelector((state) => state.blogs)
    const user = useSelector(({ user }) => user)
+   const users = useSelector(({ users }) => users)
 
    const blogFormRef = React.createRef()
 
@@ -48,9 +50,14 @@ const App = () => {
          <Notification />
 
          <p>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
+            <p>{user.name} logged in</p>
+            <button onClick={handleLogout}>logout</button>
          </p>
          <Switch>
+            <Route path="/users/:id">
+               <User users={users} />
+            </Route>
+
             <Route path="/users">
                <Users />
             </Route>
