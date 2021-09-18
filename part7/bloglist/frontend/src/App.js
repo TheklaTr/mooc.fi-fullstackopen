@@ -5,6 +5,7 @@ import { initializeUser, removeUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
 import LoginForm from './components/LoginForm'
+import NavigationMenu from './components/NavigationMenu'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -45,14 +46,11 @@ const App = () => {
 
    return (
       <div>
-         <h2>blogs</h2>
+         <NavigationMenu user={user} logout={handleLogout} />
 
+         <h2>blog apps</h2>
          <Notification />
 
-         <div>
-            <p>{user.name} logged in</p>
-            <button onClick={handleLogout}>logout</button>
-         </div>
          <Switch>
             <Route path="/users/:id">
                <User users={users} />
