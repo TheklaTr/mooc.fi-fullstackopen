@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
 import PropTypes from 'prop-types'
+import React from 'react'
 
 const Blog = ({ blog, own }) => {
-   const [visible, setVisible] = useState(false)
    const blogs = useSelector((state) => state.blogs)
 
    const dispatch = useDispatch()
@@ -16,13 +16,6 @@ const Blog = ({ blog, own }) => {
       border: 'solid',
       borderWidth: 1,
       marginBottom: 5,
-   }
-
-   const label = visible ? 'hide' : 'view'
-
-   const handleLike = async (id) => {
-      const blogToLike = blogs.find((b) => b.id === id)
-      dispatch(likeBlog(blogToLike))
    }
 
    const handleRemove = async (id) => {
@@ -38,22 +31,37 @@ const Blog = ({ blog, own }) => {
    return (
       <div style={blogStyle} className="blog">
          <div>
-            <i>{blog.title}</i> by {blog.author}{' '}
-            <button onClick={() => setVisible(!visible)}>{label}</button>
+            <Link to={`/blogs/${blog.id}`}>
+               {blog.title} {blog.author}
+            </Link>{' '}
+            {own && (
+               <button onClick={() => handleRemove(blog.id)}>remove</button>
+            )}
          </div>
-         {visible && (
-            <div>
-               <div>{blog.url}</div>
-               <div>
-                  likes {blog.likes}
-                  <button onClick={() => handleLike(blog.id)}>like</button>
-               </div>
-               <div>{blog.user.name}</div>
-               {own && (
-                  <button onClick={() => handleRemove(blog.id)}>remove</button>
-               )}
-            </div>
-         )}
+      </div>
+   )
+}
+
+export const DetailedBlog = ({ blogs }) => {
+   const id = useParams().id
+   const blog = blogs.find((b) => b.id === id)
+
+   const dispatch = useDispatch()
+
+   const handleLike = async (id) => {
+      const blogToLike = blogs.find((b) => b.id === id)
+      dispatch(likeBlog(blogToLike))
+   }
+
+   return (
+      <div>
+         <h1>{blog.title}</h1>
+         <a href={blog.url}>{blog.url}</a>
+         <div>
+            likes {blog.likes}
+            <button onClick={() => handleLike(blog.id)}>like</button>
+         </div>
+         <div>added by {blog.user.name}</div>
       </div>
    )
 }

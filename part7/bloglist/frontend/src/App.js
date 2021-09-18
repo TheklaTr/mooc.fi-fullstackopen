@@ -1,9 +1,9 @@
+import Blog, { DetailedBlog } from './components/Blog'
 import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { initializeUser, removeUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
-import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
@@ -49,10 +49,10 @@ const App = () => {
 
          <Notification />
 
-         <p>
+         <div>
             <p>{user.name} logged in</p>
             <button onClick={handleLogout}>logout</button>
-         </p>
+         </div>
          <Switch>
             <Route path="/users/:id">
                <User users={users} />
@@ -60,6 +60,10 @@ const App = () => {
 
             <Route path="/users">
                <Users />
+            </Route>
+
+            <Route path="/blogs/:id">
+               <DetailedBlog blogs={blogs} />
             </Route>
 
             <Route path="/">
