@@ -8,7 +8,7 @@ const reducer = (state = [], action) => {
       return action.data.sort(byLikes)
    case 'NEW_BLOG':
       return [...state, action.data]
-   case 'LIKE_BLOG':
+   case 'UPDATE_BLOG':
       return state
          .map((blog) => (blog.id !== action.data.id ? blog : action.data))
          .sort(byLikes)
@@ -44,7 +44,7 @@ export const likeBlog = (blog) => {
       const toLike = { ...blog, likes: blog.likes + 1, user: blog.user.id }
       const data = await blogService.update(toLike)
       dispatch({
-         type: 'LIKE_BLOG',
+         type: 'UPDATE_BLOG',
          data,
       })
    }
@@ -56,6 +56,16 @@ export const removeBlog = (id) => {
       dispatch({
          type: 'DELETE_BLOG',
          data: { id },
+      })
+   }
+}
+
+export const addComment = (id, comment) => {
+   return async (dispatch) => {
+      const data = await blogService.addComment(id, comment)
+      dispatch({
+         type: 'UPDATE_BLOG',
+         data,
       })
    }
 }

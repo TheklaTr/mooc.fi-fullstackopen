@@ -69,4 +69,29 @@ router.post('/', async (request, response) => {
    response.status(201).json(savedBlog)
 })
 
+router.post('/:id/comments', async (request, response) => {
+   const body = request.body
+
+   const foundBlog = await Blog.findById(request.params.id)
+   const comments = body.comments.filter((x) => x)
+   if (comments.length === 0) {
+      response.json(foundBlog.toJSON())
+      return
+   }
+
+   const blog = {
+      title: foundBlog.title,
+      author: foundBlog.author,
+      url: foundBlog.url,
+      likes: foundBlog.likes,
+      comments: foundBlog.comments.concat(comments),
+   }
+
+   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+      new: true,
+   })
+
+   response.json(updatedBlog.toJSON())
+})
+
 module.exports = router

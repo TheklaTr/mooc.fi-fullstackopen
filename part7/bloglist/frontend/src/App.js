@@ -1,9 +1,10 @@
-import Blog, { DetailedBlog } from './components/Blog'
 import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { initializeUser, removeUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
+import Blog from './components/Blog'
+import DetailedBlog from './components/DetailedBlog'
 import LoginForm from './components/LoginForm'
 import NavigationMenu from './components/NavigationMenu'
 import NewBlog from './components/NewBlog'
