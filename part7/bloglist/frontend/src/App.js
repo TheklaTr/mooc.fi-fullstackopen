@@ -1,9 +1,17 @@
+import {
+   Paper,
+   Table,
+   TableBody,
+   TableContainer,
+   Typography,
+} from '@material-ui/core'
 import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { initializeUser, removeUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Blog from './components/Blog'
+import Container from '@material-ui/core/Container'
 import DetailedBlog from './components/DetailedBlog'
 import LoginForm from './components/LoginForm'
 import NavigationMenu from './components/NavigationMenu'
@@ -36,20 +44,20 @@ const App = () => {
 
    if (!user) {
       return (
-         <div>
-            <h2>login to application</h2>
+         <Container>
+            <Typography variant="h2">login to application</Typography>
 
             <Notification />
             <LoginForm />
-         </div>
+         </Container>
       )
    }
 
    return (
-      <div>
+      <Container>
          <NavigationMenu user={user} logout={handleLogout} />
 
-         <h2>blog apps</h2>
+         <Typography variant="h3">blog apps</Typography>
          <Notification />
 
          <Switch>
@@ -70,16 +78,22 @@ const App = () => {
                   <NewBlog formRef={blogFormRef} />
                </Togglable>
 
-               {blogs.map((blog) => (
-                  <Blog
-                     key={blog.id}
-                     blog={blog}
-                     own={user.username === blog.user.username}
-                  />
-               ))}
+               <TableContainer component={Paper}>
+                  <Table>
+                     <TableBody>
+                        {blogs.map((blog) => (
+                           <Blog
+                              key={blog.id}
+                              blog={blog}
+                              own={user.username === blog.user.username}
+                           />
+                        ))}
+                     </TableBody>
+                  </Table>
+               </TableContainer>
             </Route>
          </Switch>
-      </div>
+      </Container>
    )
 }
 

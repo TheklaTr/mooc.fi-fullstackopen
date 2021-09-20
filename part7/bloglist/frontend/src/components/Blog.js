@@ -1,5 +1,7 @@
+import { Button, TableCell, TableRow } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 
+import DeleteIcon from '@mui/icons-material/Delete'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -9,14 +11,6 @@ const Blog = ({ blog, own }) => {
    const blogs = useSelector((state) => state.blogs)
 
    const dispatch = useDispatch()
-
-   const blogStyle = {
-      paddingTop: 10,
-      paddingLeft: 2,
-      border: 'solid',
-      borderWidth: 1,
-      marginBottom: 5,
-   }
 
    const handleRemove = async (id) => {
       const blogToRemove = blogs.find((b) => b.id === id)
@@ -29,16 +23,25 @@ const Blog = ({ blog, own }) => {
    }
 
    return (
-      <div style={blogStyle} className="blog">
-         <div>
+      <TableRow className="blog">
+         <TableCell>
             <Link to={`/blogs/${blog.id}`}>
                {blog.title} {blog.author}
-            </Link>{' '}
+            </Link>
+         </TableCell>
+         <TableCell align="right">
             {own && (
-               <button onClick={() => handleRemove(blog.id)}>remove</button>
+               <Button
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => handleRemove(blog.id)}
+               >
+                  remove
+               </Button>
             )}
-         </div>
-      </div>
+         </TableCell>
+      </TableRow>
    )
 }
 

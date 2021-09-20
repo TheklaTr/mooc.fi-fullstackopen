@@ -1,3 +1,4 @@
+import { Alert } from '@material-ui/lab'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -6,15 +7,7 @@ const Notification = ({ notification }) => {
       return null
    }
 
-   const style = {
-      borderStyle: 'solid',
-      borderRadius: 5,
-      padding: 10,
-      color: notification.type === 'success' ? 'green' : 'red',
-      background: 'lightgrey',
-   }
-
-   return <div style={style}>{notification.message}</div>
+   return <Alert severity={notification.type}>{notification.message}</Alert>
 }
 
 export default connect((state) => ({ notification: state.notification }))(

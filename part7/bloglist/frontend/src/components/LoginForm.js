@@ -1,3 +1,4 @@
+import { Button, TextField } from '@material-ui/core'
 import React, { useState } from 'react'
 
 import loginService from '../services/login'
@@ -48,23 +49,31 @@ const LoginForm = () => {
    return (
       <form onSubmit={handleLogin}>
          <div>
-            username
-            <input
+            <TextField
                id="username"
+               label="Username"
+               variant="outlined"
                value={username}
                onChange={({ target }) => setUsername(target.value)}
+               required
             />
          </div>
          <div>
-            password
-            <input
+            <TextField
                id="password"
+               label="Password"
+               variant="outlined"
                type="password"
                value={password}
                onChange={({ target }) => setPassword(target.value)}
+               required
             />
          </div>
-         <button id="login">login</button>
+         <div>
+            <Button variant="contained" color="primary" type="submit">
+               login
+            </Button>
+         </div>
       </form>
    )
 }

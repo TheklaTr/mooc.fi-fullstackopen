@@ -1,6 +1,22 @@
+import {
+   Button,
+   Card,
+   CardContent,
+   IconButton,
+   Link,
+   Paper,
+   Table,
+   TableBody,
+   TableCell,
+   TableContainer,
+   TableRow,
+   TextField,
+   Typography,
+} from '@material-ui/core'
 import { addComment, likeBlog } from '../reducers/blogReducer'
 
 import React from 'react'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -28,24 +44,46 @@ const DetailedBlog = ({ blogs }) => {
 
    return (
       <div>
-         <h1>{blog.title}</h1>
-         <a href={blog.url}>{blog.url}</a>
-         <div>
-            likes {blog.likes}
-            <button onClick={() => handleLike(blog.id)}>like</button>
-         </div>
-         <div>added by {blog.user.name}</div>
-
-         <h2>comments</h2>
+         <Card>
+            <CardContent>
+               <Typography variant="h4" component="div">
+                  {blog.title}
+               </Typography>
+               <Typography variant="h6">added by {blog.user.name}</Typography>
+               <Link variant="h6" underline="hover" href={blog.url}>
+                  {blog.url}
+               </Link>
+               <Typography variant="h6">
+                  likes {blog.likes}
+                  <IconButton
+                     color="primary"
+                     aria-label="like blog"
+                     onClick={() => handleLike(blog.id)}
+                  >
+                     <ThumbUpIcon />
+                  </IconButton>
+               </Typography>
+            </CardContent>
+         </Card>
+         <Typography variant="h4">comments</Typography>
          <form onSubmit={handleSubmit}>
-            <input name="comment" type="text" />
-            <button type="submit">add comment</button>
+            <TextField name="comment" type="text" />
+            <Button variant="outlined" type="submit">
+               add comment
+            </Button>
          </form>
-         <ul>
-            {blog.comments.map((comment, index) => (
-               <li key={index}>{comment}</li>
-            ))}
-         </ul>
+
+         <TableContainer component={Paper}>
+            <Table>
+               <TableBody>
+                  {blog.comments.map((comment, index) => (
+                     <TableRow key={index}>
+                        <TableCell>{comment}</TableCell>
+                     </TableRow>
+                  ))}
+               </TableBody>
+            </Table>
+         </TableContainer>
       </div>
    )
 }
