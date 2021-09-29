@@ -1,5 +1,4 @@
 const { ApolloServer, gql } = require('apollo-server')
-const { v1: uuid } = require('uuid')
 
 const mongoose = require('mongoose')
 const Author = require('./models/author')
@@ -61,34 +60,25 @@ const resolvers = {
    Query: {
       bookCount: () => Book.collection.countDocuments(),
       authorCount: () => Author.collection.countDocuments(),
-      allBooks: (root, args) => {
-         return Book.find({})
-         // return args.genre && args.author
-         //    ? books.filter(
-         //         (b) =>
-         //            b.genres.includes(args.genre) && b.author === args.author
-         //      )
-         //    : args.author
-         //    ? books.filter((b) => b.author === args.author)
-         //    : args.genre
-         //    ? books.filter((b) => b.genres.includes(args.genre))
-         //    : books
+      allBooks: async (root, args) => {
+         return !args.genre
+            ? await Book.find({}).populate('author')
+            : await Book.find({ genres: { $in: args.genre } }).populate(
+                 'author'
+              )
       },
 
-      allAuthors: () => {
-         // return authors.map((author) => {
-         //    const bookCount = books.reduce(
-         //       (sum, current) =>
-         //          current.author === author.name ? sum + 1 : sum,
-         //       0
-         //    )
-         //    return { ...author, bookCount }
-         // })
-         return Author.find({})
+      allAuthors: async () => {
+         let authors = await Author.find({})
+         return authors.map((author) => ({
+            ...author,
+            bookCount: books.filter((b) => b.author.name === author.name)
+               .length,
+         }))
       },
    },
    Mutation: {
-      addBook: (root, args) => {
+      addBook: async (root, args) => {
          // if author is not yet saved to the server
          // if (!authors.find((a) => a.name === args.name)) {
          //    const author = {
@@ -96,7 +86,7 @@ const resolvers = {
          //       born: null,
          //       id: uuid(),
          //    }
-         //    authors = authors.concat(author)
+         //    author = authors.concat(author)
          // }
 
          // const book = { ...args, id: uuid() }
