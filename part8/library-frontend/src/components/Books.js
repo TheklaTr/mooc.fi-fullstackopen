@@ -68,7 +68,9 @@ const Books = (props) => {
             </tbody>
          </table>
          {genres.map((genre, index) => (
-            <button onClick={() => selectGenre(genre)}>{genre}</button>
+            <button key={genre} onClick={() => selectGenre(genre)}>
+               {genre}
+            </button>
          ))}
       </div>
    )
