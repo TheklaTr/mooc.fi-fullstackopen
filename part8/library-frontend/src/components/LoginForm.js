@@ -30,8 +30,6 @@ const LoginForm = ({ setToken, show, setPage }) => {
       event.preventDefault()
 
       login({ variables: { username, password } })
-      setUsername('')
-      setPassword('')
    }
 
    return (
