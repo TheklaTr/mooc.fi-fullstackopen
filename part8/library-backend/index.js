@@ -5,6 +5,9 @@ const {
    AuthenticationError,
 } = require('apollo-server')
 
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
+
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -74,6 +77,10 @@ const typeDefs = gql`
       createUser(username: String!, favoriteGenre: String!): User
       login(username: String!, password: String!): Token
    }
+
+   type Subscription {
+      bookAdded: Book!
+   }
 `
 
 const resolvers = {
@@ -137,12 +144,16 @@ const resolvers = {
             author.bookCount++
             await author.save()
 
-            return book.save()
+            await book.save()
          } catch (error) {
             throw new UserInputError(error.message, {
                invalidArgs: args,
             })
          }
+
+         pubsub.publish('BOOK_ADDED', { bookAdded: book })
+
+         return book
       },
 
       editAuthor: async (root, args, { currentUser }) => {
@@ -191,6 +202,12 @@ const resolvers = {
          return { value: jwt.sign(userForToken, JWT_SECRET) }
       },
    },
+
+   Subscription: {
+      bookAdded: {
+         subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
+      },
+   },
 }
 
 const server = new ApolloServer({
@@ -209,6 +226,7 @@ const server = new ApolloServer({
    },
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
    console.log(`Server ready at ${url}`)
+   console.log(`Subscription ready at ${subscriptionsUrl}`)
 })
