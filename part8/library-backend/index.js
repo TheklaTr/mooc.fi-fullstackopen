@@ -35,6 +35,8 @@ mongoose
       console.log('error connection to MongoDB:', error.message)
    })
 
+mongoose.set('debug', true)
+
 const typeDefs = gql`
    type Book {
       title: String!
@@ -90,35 +92,52 @@ const resolvers = {
       allBooks: async (root, args) => {
          const books = await Book.find({}).populate('author')
 
-         return args.genre && args.author
-            ? books.filter(
-                 (b) =>
-                    b.genres.includes(args.genre) &&
-                    b.author.name === args.author
-              )
-            : args.author
-            ? books.filter((b) => b.author.name === args.author)
-            : args.genre
-            ? books.filter((b) => b.genres.includes(args.genre))
-            : books
+         if (args.genre && args.author) {
+            const author = await Author.findOne({ name: args.author })
+            const books = await Book.find({
+               author: author._id,
+               genres: { $in: args.genre },
+            }).populate('author')
+
+            return books
+         }
+
+         if (args.author) {
+            const author = await Author.findOne({ name: args.author })
+            const books = await Book.find({ author: author._id }).populate(
+               'author'
+            )
+
+            return books
+         }
+
+         if (args.genre) {
+            const books = await Book.find({
+               genres: { $in: args.genre },
+            }).populate('author')
+
+            return books
+         }
+
+         return books
       },
 
-      allAuthors: async () => {
-         let authors = await Author.find({})
-         const books = await Book.find({}).populate('author')
-         return authors.map((author) => ({
-            id: author._id,
-            name: author.name,
-            born: author.born,
-            bookCount: books.filter((b) => b.author.name === author.name)
-               .length,
-         }))
+      allAuthors: () => {
+         return Author.find({})
       },
 
       me: (root, args, context) => {
          return context.currentUser
       },
    },
+
+   Author: {
+      bookCount: async (root) => {
+         const books = await Book.find({ author: root.id })
+         return books.length
+      },
+   },
+
    Mutation: {
       addBook: async (root, args, context) => {
          const currentUser = context.currentUser
@@ -141,13 +160,14 @@ const resolvers = {
 
             const book = new Book({ ...args, author })
 
-            author.bookCount++
-            await author.save()
-
             await book.save()
 
-            pubsub.publish('BOOK_ADDED', { bookAdded: book })
-            return book
+            const returnedBook = await Book.findById(book._id).populate(
+               'author'
+            )
+
+            pubsub.publish('BOOK_ADDED', { bookAdded: returnedBook })
+            return returnedBook
          } catch (error) {
             throw new UserInputError(error.message, {
                invalidArgs: args,
