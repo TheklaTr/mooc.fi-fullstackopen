@@ -145,15 +145,14 @@ const resolvers = {
             await author.save()
 
             await book.save()
+
+            pubsub.publish('BOOK_ADDED', { bookAdded: book })
+            return book
          } catch (error) {
             throw new UserInputError(error.message, {
                invalidArgs: args,
             })
          }
-
-         pubsub.publish('BOOK_ADDED', { bookAdded: book })
-
-         return book
       },
 
       editAuthor: async (root, args, { currentUser }) => {
