@@ -8,6 +8,32 @@ interface Result {
    average: number;
 }
 
+interface inputValue {
+   target: number;
+   hours: Array<number>;
+}
+
+const parseExercisesArgs = (args: Array<string>): inputValue => {
+   if (args.length < 4) throw new Error('Not enough arguments');
+
+   // args[0, 1, 2(target), 3(...hours)]
+   const [, , target, ...hours] = args.map((arg: string): number =>
+      Number(arg)
+   );
+
+   // check if there is undefined/null value in hours-array
+   const isNaNHours = hours.find((h: number): boolean => isNaN(h));
+
+   if (!isNaN(target) && isNaNHours === undefined) {
+      return {
+         target: Number(args[2]),
+         hours,
+      };
+   } else {
+      throw new Error('Provided values were not numbers');
+   }
+};
+
 const calculateExercises = (hours: Array<number>, target: number): Result => {
    const periodLength: number = hours.length;
    const trainingDays: number = hours.filter((h) => h > 0).length;
@@ -18,11 +44,7 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
 
    const ratingValue: number = average - target;
    const rating: number =
-      ratingValue < -0.5
-         ? 1
-         : ratingValue > -0.5 && ratingValue > -0.75
-         ? 2
-         : 3;
+      ratingValue < -0.5 ? 1 : -0.5 < ratingValue && ratingValue < 0 ? 2 : 3;
 
    const ratingDescription: string =
       rating === 1
@@ -42,5 +64,9 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
    };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
-console.log(calculateExercises([1, 0, 2, 4.5, 0, 3, 1, 0, 4], 2));
+try {
+   const { target, hours } = parseExercisesArgs(process.argv);
+   console.log(calculateExercises(hours, target));
+} catch (e) {
+   console.log('Error, something bad happened, message:', e.message);
+}
