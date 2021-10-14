@@ -34,7 +34,10 @@ const parseExercisesArgs = (args: Array<string>): inputValue => {
    }
 };
 
-const calculateExercises = (hours: Array<number>, target: number): Result => {
+export const calculateExercises = (
+   hours: Array<number>,
+   target: number
+): Result => {
    const periodLength: number = hours.length;
    const trainingDays: number = hours.filter((h) => h > 0).length;
 
@@ -68,5 +71,5 @@ try {
    const { target, hours } = parseExercisesArgs(process.argv);
    console.log(calculateExercises(hours, target));
 } catch (e) {
-   console.log('Error, something bad happened, message:', e.message);
+   console.log('Error, something bad happened, message:', (e as Error).message);
 }
