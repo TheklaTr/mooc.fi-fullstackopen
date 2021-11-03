@@ -10,7 +10,8 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
   "include": [".eslintrc.js", "*.ts", "*.js", "**/*.ts", "**/*.js"]
 }
