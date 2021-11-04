@@ -1,28 +1,61 @@
-import { Part } from './../types';
+import { CoursePart } from './../types';
 import React from 'react';
+import { assertNever } from './../utils';
 
-const CoursePart = ({ name, exerciseCount }: Part) => {
-  return (
-    <div>
-      <p>
-        {name} {exerciseCount}
-      </p>
-    </div>
-  );
+const Part = (part: CoursePart) => {
+  switch (part.type) {
+    case 'normal':
+      return (
+        <p>
+          <b>
+            {part.name} {part.exerciseCount}
+          </b>
+          <br />
+          <em>{part.description}</em>
+        </p>
+      );
+    case 'groupProject':
+      return (
+        <p>
+          <b>
+            {part.name} {part.exerciseCount}
+          </b>
+          <br />
+          project exercises {part.groupProjectCount}
+        </p>
+      );
+    case 'submission':
+      return (
+        <p>
+          <b>
+            {part.name} {part.exerciseCount}
+          </b>
+          <br />
+          <em>{part.description}</em>
+          <br />
+          submit to {part.exerciseSubmissionLink}
+        </p>
+      );
+    case 'special':
+      return (
+        <p>
+          <b>
+            {part.name} {part.exerciseCount}
+          </b>
+          <br />
+          <em>{part.description}</em>
+          <br />
+          required skills: {part.requirements.join(', ')}
+        </p>
+      );
+
+    default:
+      return assertNever(part);
+  }
 };
 
-const Content = ({ courses }: { courses: Part[] }) => {
-  return (
-    <div>
-      {courses.map((part) => (
-        <CoursePart
-          key={part.name}
-          name={part.name}
-          exerciseCount={part.exerciseCount}
-        />
-      ))}
-    </div>
-  );
+const Content = ({ courses }: { courses: CoursePart[] }) => {
+  return <div>{courses.map((part) => Part(part))}</div>;
 };
 
 export default Content;

@@ -1,7 +1,7 @@
-import { Part } from '../types';
+import { CoursePart } from '../types';
 import React from 'react';
 
-const Total = ({ courses }: { courses: Part[] }) => {
+const Total = ({ courses }: { courses: CoursePart[] }) => {
   return (
     <div>
       <p>
