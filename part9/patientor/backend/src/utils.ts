@@ -24,6 +24,7 @@ const parseDate = (date: unknown): string => {
   return date;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
 };
@@ -42,6 +43,7 @@ type Fields = {
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
+  entries?: unknown;
 };
 
 const toNewPatientEntry = ({
@@ -57,6 +59,7 @@ const toNewPatientEntry = ({
     ssn: parseString(ssn),
     gender: parseGender(gender),
     occupation: parseString(occupation),
+    entries: [],
   };
 
   return newEntry;
