@@ -1,10 +1,11 @@
+import { updatePatient, useStateValue } from "../state";
+
 import { Icon } from "semantic-ui-react";
 import { Patient } from "../types";
 import React from "react";
 import { apiBaseUrl } from "./../constants";
 import axios from "axios";
 import { useParams } from "react-router";
-import { useStateValue } from "../state";
 
 const PatientPage = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -23,7 +24,7 @@ const PatientPage = () => {
             `${apiBaseUrl}/patients/${id}`
           );
           setPatient(patientFromApi);
-          dispatch({ type: "UPDATE_PATIENT", payload: patientFromApi });
+          dispatch(updatePatient(patientFromApi));
         };
 
         void fetchPatient();
@@ -56,7 +57,7 @@ const GenderToIcon = (patient: Patient) => {
     case "female":
       return <Icon name="venus" />;
     default:
-      return <Icon name="neuter" />;
+      return <Icon name="non binary transgender" />;
   }
 };
 
