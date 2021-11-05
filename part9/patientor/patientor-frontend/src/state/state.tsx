@@ -1,19 +1,22 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { Patient } from "../types";
 
 import { Action } from "./reducer";
+import { Patient } from "../types";
 
 export type State = {
   patients: { [id: string]: Patient };
+  patientDetails: Map<string, Patient>;
 };
 
 const initialState: State = {
-  patients: {}
+  patients: {},
+  patientDetails: new Map<string, Patient>(),
 };
 
+// https://stackoverflow.com/questions/54577865/react-createcontext-issue-in-typescript/54667477
 export const StateContext = createContext<[State, React.Dispatch<Action>]>([
   initialState,
-  () => initialState
+  () => initialState,
 ]);
 
 type StateProviderProps = {
@@ -23,7 +26,7 @@ type StateProviderProps = {
 
 export const StateProvider: React.FC<StateProviderProps> = ({
   reducer,
-  children
+  children,
 }: StateProviderProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
