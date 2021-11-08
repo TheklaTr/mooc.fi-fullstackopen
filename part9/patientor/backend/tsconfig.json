@@ -13,5 +13,10 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": [".eslintrc.js", "*.ts", "*.js", "**/*.ts", "**/*.js"]
+  "include": [".eslintrc.js", "*.ts", "*.js", "**/*.ts", "**/*.js"],
+  "path": {
+    "@component/*": ["component/*"],
+    "@styles/*": ["styles/*"],
+    "@lib/*": ["lib/*"]
+  }
 }

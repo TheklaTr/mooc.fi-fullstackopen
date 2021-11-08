@@ -1,12 +1,15 @@
-import { Gender, NewPatientEntry } from './types';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
+import { Entry, Gender, NewPatientEntry } from "./types";
 
 const isString = (text: unknown): text is string => {
-  return typeof text === 'string' || text instanceof String;
+  return typeof text === "string" || text instanceof String;
 };
 
 const parseString = (str: unknown): string => {
   if (!str || !isString(str)) {
-    throw new Error('Incorrect or missing value');
+    throw new Error("Incorrect or missing value");
   }
 
   return str;
@@ -18,23 +21,44 @@ const isDate = (date: string): boolean => {
 
 const parseDate = (date: unknown): string => {
   if (!date || !isString(date) || !isDate(date)) {
-    throw new Error('Incorrect or missing date: ' + date);
+    throw new Error("Incorrect or missing date: " + date);
   }
 
   return date;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
 };
 
 const parseGender = (gender: unknown): Gender => {
   if (!gender || !isGender(gender)) {
-    throw new Error('Incorrect or missing gender: ' + gender);
+    throw new Error("Incorrect or missing gender: " + gender);
   }
 
   return gender;
+};
+
+const isEntry = (param: any): param is Entry => {
+  return (
+    typeof param === "object" &&
+    Object.keys(param).includes("type") &&
+    ["Hospital", "OccupationalHealthcare", "HealthCheck"].includes(
+      param["type"]
+    )
+  );
+};
+
+const isEntries = (param: any): param is Entry[] => {
+  return Array.isArray(param) && param.every((entry) => isEntry(entry));
+};
+
+const parseEntries = (entries: unknown) => {
+  if (!entries || !isEntries(entries)) {
+    throw new Error("Incorrect or missing entries: " + entries);
+  }
+
+  return entries;
 };
 
 type Fields = {
@@ -43,7 +67,7 @@ type Fields = {
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
-  entries?: unknown;
+  entries: unknown;
 };
 
 const toNewPatientEntry = ({
@@ -52,6 +76,7 @@ const toNewPatientEntry = ({
   ssn,
   gender,
   occupation,
+  entries,
 }: Fields): NewPatientEntry => {
   const newEntry: NewPatientEntry = {
     name: parseString(name),
@@ -59,7 +84,7 @@ const toNewPatientEntry = ({
     ssn: parseString(ssn),
     gender: parseGender(gender),
     occupation: parseString(occupation),
-    entries: [],
+    entries: parseEntries(entries),
   };
 
   return newEntry;
