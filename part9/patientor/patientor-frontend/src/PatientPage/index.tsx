@@ -46,6 +46,25 @@ const PatientPage = () => {
         <br />
         occupation: {patient.occupation}
       </p>
+      <h3>entries</h3>
+      {patient?.entries.length !== 0 &&
+        patient?.entries.map((e) => {
+          return (
+            <div key={e.id}>
+              <p>
+                {e.type === "OccupationalHealthcare"
+                  ? e.sickLeave?.startDate
+                  : null}{" "}
+                {e.description}
+              </p>
+              <ul>
+                {e.diagnosisCodes?.map((code) => (
+                  <li key={code}>{code}</li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
     </div>
   );
 };
