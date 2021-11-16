@@ -20,7 +20,13 @@ const App = () => {
           `${apiBaseUrl}/patients`
         );
         dispatch(setPatientList(patientListFromApi));
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
+    const fetchDiagnosesList = async () => {
+      try {
         const { data: diagnosisListFromApi } = await axios.get<Diagnosis[]>(
           `${apiBaseUrl}/diagnoses`
         );
@@ -29,7 +35,9 @@ const App = () => {
         console.error(e);
       }
     };
+
     void fetchPatientList();
+    void fetchDiagnosesList();
   }, [dispatch]);
 
   return (

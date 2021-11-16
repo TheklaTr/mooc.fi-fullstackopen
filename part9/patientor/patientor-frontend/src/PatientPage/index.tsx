@@ -1,14 +1,14 @@
-import { updatePatient, useStateValue } from "../state";
+import { Diagnosis, Patient } from "../types";
+import { setDiagnosisList, updatePatient, useStateValue } from "../state";
 
 import { Icon } from "semantic-ui-react";
-import { Patient } from "../types";
 import React from "react";
 import { apiBaseUrl } from "./../constants";
 import axios from "axios";
 import { useParams } from "react-router";
 
 const PatientPage = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = React.useState<Patient | undefined>(undefined);
 
@@ -16,7 +16,7 @@ const PatientPage = () => {
     if (patients) {
       const patientInState = patients[id];
       // check if it already is in the app state
-      if ("ssn" in patientInState) {
+      if (patientInState && "ssn" in patientInState) {
         setPatient(patientInState);
       } else {
         const fetchPatient = async () => {
@@ -28,6 +28,21 @@ const PatientPage = () => {
         };
 
         void fetchPatient();
+      }
+
+      const fetchDiagnosesList = async () => {
+        try {
+          const { data: diagnosesListFromApi } = await axios.get<Diagnosis[]>(
+            `${apiBaseUrl}/diagnoses`
+          );
+          dispatch(setDiagnosisList(diagnosesListFromApi));
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      if (!diagnoses) {
+        void fetchDiagnosesList();
       }
     }
   }, [id, patients, dispatch]);
@@ -46,25 +61,31 @@ const PatientPage = () => {
         <br />
         occupation: {patient.occupation}
       </p>
-      <h3>entries</h3>
-      {patient?.entries.length !== 0 &&
-        patient?.entries.map((e) => {
-          return (
-            <div key={e.id}>
-              <p>
-                {e.type === "OccupationalHealthcare"
-                  ? e.sickLeave?.startDate
-                  : null}{" "}
-                {e.description}
-              </p>
-              <ul>
-                {e.diagnosisCodes?.map((code) => (
-                  <li key={code}>{code}</li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+
+      {patient?.entries.length !== 0 ? (
+        <div>
+          <h3>entries</h3>
+          {patient?.entries.map((e) => {
+            return (
+              <div key={e.id}>
+                <p>
+                  {e.type === "OccupationalHealthcare"
+                    ? e.sickLeave?.startDate
+                    : null}{" "}
+                  {e.description}
+                </p>
+                <ul>
+                  {e.diagnosisCodes?.map((code) => (
+                    <li key={code}>
+                      {code} {diagnoses[code].name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 };
