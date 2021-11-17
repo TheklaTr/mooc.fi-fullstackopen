@@ -1,7 +1,8 @@
+import { Container, Header, Icon } from "semantic-ui-react";
 import { Diagnosis, Patient } from "../types";
 import { setDiagnosisList, updatePatient, useStateValue } from "../state";
 
-import { Icon } from "semantic-ui-react";
+import EntryDetails from "./EntryDetails";
 import React from "react";
 import { apiBaseUrl } from "./../constants";
 import axios from "axios";
@@ -20,9 +21,7 @@ const PatientPage = () => {
         setPatient(patientInState);
       } else {
         const fetchPatient = async () => {
-          const { data: patientFromApi } = await axios.get<Patient>(
-            `${apiBaseUrl}/patients/${id}`
-          );
+          const { data: patientFromApi } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
           setPatient(patientFromApi);
           dispatch(updatePatient(patientFromApi));
         };
@@ -32,9 +31,7 @@ const PatientPage = () => {
 
       const fetchDiagnosesList = async () => {
         try {
-          const { data: diagnosesListFromApi } = await axios.get<Diagnosis[]>(
-            `${apiBaseUrl}/diagnoses`
-          );
+          const { data: diagnosesListFromApi } = await axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`);
           dispatch(setDiagnosisList(diagnosesListFromApi));
         } catch (error) {
           console.log(error);
@@ -52,41 +49,30 @@ const PatientPage = () => {
   }
 
   return (
-    <div>
-      <h1>
+    <Container>
+      <Header as="h2">
         {patient.name} {GenderToIcon(patient)}
-      </h1>
-      <p>
+      </Header>
+      <Header.Subheader>
         ssn: {patient.ssn}
         <br />
         occupation: {patient.occupation}
-      </p>
+      </Header.Subheader>
+      <br />
 
       {patient?.entries.length !== 0 ? (
-        <div>
-          <h3>entries</h3>
+        <Container>
+          <Header>entries</Header>
           {patient?.entries.map((e) => {
             return (
-              <div key={e.id}>
-                <p>
-                  {e.type === "OccupationalHealthcare"
-                    ? e.sickLeave?.startDate
-                    : null}{" "}
-                  {e.description}
-                </p>
-                <ul>
-                  {e.diagnosisCodes?.map((code) => (
-                    <li key={code}>
-                      {code} {diagnoses[code].name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <Container key={e.id}>
+                <EntryDetails entry={e} />
+              </Container>
             );
           })}
-        </div>
+        </Container>
       ) : null}
-    </div>
+    </Container>
   );
 };
 

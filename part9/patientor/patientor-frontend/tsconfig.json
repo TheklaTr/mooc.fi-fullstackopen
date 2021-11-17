@@ -17,10 +17,10 @@
     "allowJs": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", ".eslintrc.js"],
-  "path": {
-    "@component/*": ["component/*"],
-    "@styles/*": ["styles/*"],
-    "@lib/*": ["lib/*"]
-  }
+  "include": ["src", ".eslintrc.js"]
+  // "path": {
+  //   "@component/*": ["component/*"],
+  //   "@styles/*": ["styles/*"],
+  //   "@lib/*": ["lib/*"]
+  // }
 }
