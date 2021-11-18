@@ -1,0 +1,53 @@
+POST http://localhost:3001/api/patients/ccfc98c0-48a6-11ec-afa5-0f551eceb482/entries
+Content-Type: application/json
+
+{
+    "date": "2021-08-05",
+    "type": "OccupationalHealthcare",
+    "specialist": "MD House",
+    "employerName": "HyPD",
+    "diagnosisCodes": ["Z57.1"],
+    "description": "Healthy",
+    "sickLeave": {
+      "startDate": "2021-08-05",
+      "endDate": "2021-08-28"
+    }
+}
+
+### OccupationalHealthcare
+POST http://localhost:3001/api/patients/ccfc98c0-48a6-11ec-afa5-0f551eceb482/entries
+Content-Type: application/json
+
+{
+    "date": "2021-09-10",
+    "specialist": "MD House",
+    "type": "OccupationalHealthcare",
+    "employerName": "FBI",
+    "description": "Prescriptions renewed."
+}
+
+### Hospital
+POST http://localhost:3001/api/patients/ccfc98c0-48a6-11ec-afa5-0f551eceb482/entries
+Content-Type: application/json
+
+{
+  "date": "2015-01-02",
+  "type": "Hospital",
+  "specialist": "MD House",
+  "description":"Healing time appr. 2 weeks. patient doesn't remember how he got the injury.",
+  "discharge": {
+    "date": "2015-01-03",
+    "criteria": "Thumb has healed."
+  }
+}
+### HealthCheck
+POST http://localhost:3001/api/patients/ccfc98c0-48a6-11ec-afa5-0f551eceb482/entries
+Content-Type: application/json
+
+{
+  "date": "2018-10-05",
+  "specialist": "MD House",
+  "type": "HealthCheck",
+  "description": "Yearly control visit. Due to high cholesterol levels recommended to eat more vegetables.",
+  "healthCheckRating": 1
+}

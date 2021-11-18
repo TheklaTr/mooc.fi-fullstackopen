@@ -1,7 +1,13 @@
-import { NewPatientEntry, Patient, PublicPatient } from '../types';
+import {
+  Entry,
+  NewEntry,
+  NewPatientEntry,
+  Patient,
+  PublicPatient,
+} from "../types";
 
-import patients from '../../data/patients';
-import { v1 as uuid } from 'uuid';
+import patients from "../../data/patients";
+import { v1 as uuid } from "uuid";
 
 const getEntries = (): Patient[] => {
   return patients;
@@ -36,9 +42,26 @@ const findPatientById = (id: string): Patient | undefined => {
   return entry;
 };
 
+const addEntry = (id: string, entry: NewEntry): Patient => {
+  const foundPatient = patients.find((p) => p.id === id);
+  if (!foundPatient) {
+    throw new Error(`Invalid patient id: ${id}`);
+  }
+
+  const newEntry: Entry = {
+    id: uuid(),
+    ...entry,
+  };
+
+  foundPatient.entries = [...foundPatient.entries, newEntry];
+
+  return foundPatient;
+};
+
 export default {
   getEntries,
   getNonSensitiveEntries,
   findPatientById,
   addPatient,
+  addEntry,
 };
