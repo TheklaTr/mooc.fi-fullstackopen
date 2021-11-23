@@ -39,8 +39,8 @@ const PatientPage = () => {
       const { data: updatedPatient } = await axios.post<Patient>(`${apiBaseUrl}/patients/${id}/entries`, values);
       dispatch(updatePatient(updatedPatient));
       closeModal();
-    } catch (err) {
-      setError(err.response?.data?.error || "Unknown error");
+    } catch (e) {
+      setError(e.response?.data?.error || "Unknown error");
     }
   };
 
